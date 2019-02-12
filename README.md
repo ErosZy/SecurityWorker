@@ -73,7 +73,7 @@ onmessage = function(data) {
 > MainThread recv: pong
 > terminate
 ```
-恭喜你已经完全掌握SecurityWorker的使用了，进一步查看[SecurityWorker]()和[SecurityWorker VM]()提供的API帮助你更好的运用SecurityWorker。
+恭喜你已经完全掌握SecurityWorker的使用了，进一步查看[SecurityWorker](https://github.com/qiaozi-tech/SecurityWorker#3-securityworker-api)和[SecurityWorker VM](https://github.com/qiaozi-tech/SecurityWorker#securityworker-vm-api)提供的API帮助你更好的运用SecurityWorker。
 
 ### 3. SecurityWorker API
 
@@ -208,7 +208,7 @@ setInterval(function(){
 ```
 
 #### console相关函数
-SecurityWorker支持如下的console函数：
+SecurityWorker VM支持如下的console函数：
 * console.log
 * console.info
 * console.debug
