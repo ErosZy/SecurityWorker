@@ -96,7 +96,7 @@ SecurityWorker.ready(function(){
 
 #### SecurityWorker.prototype.postMessage(String|Object)
 发送消息给内部SecurityWorker对象。
-```
+```javascript
 var sw = new SecurityWorker();
 sw.oncreate = function() {
   sw.postMessage("Hello World!");
