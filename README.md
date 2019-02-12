@@ -78,7 +78,7 @@ onmessage = function(data) {
 ### 3. SecurityWorker API
 
 #### SecurityWorker(void)
-SecurityWorker构造函数，用于创建一个SecurityWorker实例。但请注意，实例的创建需要在Security.ready调用后进行创建，否则将有几率导致SecurityWorker VM内存分配失败。
+SecurityWorker构造函数，用于创建一个SecurityWorker实例。但请注意，实例的创建需要在SecurityWorker.ready调用后进行创建，否则将有几率导致SecurityWorker VM内存分配失败。
 ```javascript
 SecurityWorker.ready(function(){
   var sw = new SecurityWorker();
