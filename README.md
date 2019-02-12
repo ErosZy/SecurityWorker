@@ -95,7 +95,7 @@ SecurityWorker.ready(function(){
 ```
 
 #### SecurityWorker.prototype.postMessage(String|Object)
-发送消息给内部SecurityWorker对象。
+发送消息给SecurityWorker VM对象。
 ```javascript
 var sw = new SecurityWorker();
 sw.oncreate = function() {
@@ -126,7 +126,7 @@ sw.oncreate = function() {
 ```
 
 #### SecurityWorkerInstance.onmessage
-接收到SecurityWorker传递的相关数据的回调。
+接收到SecurityWorker VM传递的相关数据的回调。
 ```javascript
 var sw = new SecurityWorker();
 sw.onmessage = function(data) {
@@ -139,7 +139,7 @@ sw.onmessage = function(data) {
 ```
 
 #### SecurityWorkerInstance.onterminate
-SecurityWorker实例已经成功销毁的回调，此后将不能再进行postMessage的调用。
+SecurityWorker实例及SecurityWorker VM已经成功销毁的回调，此后将不能再进行postMessage的调用。
 ```javascript
 var sw = new SecurityWorker();
 sw.onterminate = function() {
@@ -151,7 +151,7 @@ sw.onterminate = function() {
 以下所有API只能在SecurityWorker VM中使用，外部环境的SecurityWorker实例及原型并未提供此类API。
 
 #### onmessage
-获取外部SecurityWorker实例发送的相关数据
+获取SecurityWorker实例发送的相关数据
 ```javascript
 onmessage = function(data) {
   if(typeof data == 'string') {
@@ -169,7 +169,7 @@ self.onmessage = function() {
 ```
 
 #### postMessage(String|Object)
-发送数据给外部的SecurityWorker实例。
+发送数据给SecurityWorker实例。
 ```javascript
 postMessage('Hello World!');
 postMessage({
@@ -207,8 +207,8 @@ setInterval(function(){
 }, 1000);
 ```
 
-#### console相关函数
-SecurityWorker VM支持如下的console函数：
+#### Console相关函数
+SecurityWorker VM支持如下的Console函数：
 * console.log
 * console.info
 * console.debug
@@ -277,14 +277,14 @@ ws.addEventListener('open', function(){
 ```
 
 ##### WebSocket.prototype.close(void)
-关闭WebSocket连接，并remove所有注册的事件。
+关闭WebSocket连接。
 ```javascript
 var ws = new WebSocket('wss://www.baidu.com');
 ws.close();
 ```
 
 ##### WebSocketInstance.addEventListener(String eventName, Function handler)
-SecurityWorker VM的addEventListener中支持4种标准事件:
+支持4种标准事件:
 * open: 连接打开
 * message: 获得服务器发送的数据
 * error: 发生相关错误
@@ -307,13 +307,13 @@ ws.addEventListener('error', function(error){
 
 ws.addEventListener('close', function(){
   // 不需要进行removeEventListener操作，
-  // 当调用close方法后自动解绑所有事件回调
+  // 当调用close事件后自动解绑所有事件回调
   console.log('ws client open')
 });
 ```
 
 ##### WebSocketInstance.removeEventListener(String eventName, Function handler)
-SecurityWorker VM的removeEventListener中支持4种标准事件:
+支持4种标准事件:
 * open: 连接打开
 * message: 获得服务器发送的数据
 * error: 发生相关错误
