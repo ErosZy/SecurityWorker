@@ -42,7 +42,7 @@ onmessage = function(data) {
     <!--.....-->
     <script>
         // 等待SecurityWorker初始化完成
-        Security.ready(function() {
+        SecurityWorker.ready(function() {
           var sw = new SecurityWorker();
           
           // SecurityWorker正常创建，可被使用
