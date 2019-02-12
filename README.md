@@ -77,7 +77,7 @@ onmessage = function(data) {
 
 ### 3. SecurityWorker API
 
-#### SecurityWorker
+#### SecurityWorker(void)
 SecurityWorker构造函数，用于创建一个SecurityWorker实例。但请注意，实例的创建需要在Security.ready调用后进行创建，否则将有几率导致SecurityWorker VM内存分配失败。
 ```javascript
 SecurityWorker.ready(function(){
@@ -169,29 +169,168 @@ self.onmessage = function() {
 ```
 
 #### postMessage(String|Object)
-TODO
-
-#### atob(String)
-TODO
+发送数据给外部的SecurityWorker实例。
+```javascript
+postMessage('Hello World!');
+postMessage({
+  now: Date.now()
+});
+```
 
 #### btoa(String)
-TODO
+对字符串进行Base64编码。
+```javascript
+var b64 = btoa('Hello World!');
+console.log(b64); // SGVsbG8gV29ybGQh
+```
+
+#### atob(String)
+对用Base64编码过的字符串进行解码。
+```javascript
+var str = atob('SGVsbG8gV29ybGQh');
+console.log(str); // 'Hello World!'
+```
+
+#### setTimeout(Function, Number)
+延迟执行函数
+```javascript
+setTimeout(function(){
+  console.log('Hello World!');
+}, 1000);
+```
+
+#### setInterval(Function, Number)
+循环执行函数(注意：setInterval内部实现采用setTimeout)
+```javascript
+setInterval(function(){
+  console.log('Hello World!');
+}, 1000);
+```
+
+#### console相关函数
+SecurityWorker支持如下的console函数：
+* console.log
+* console.info
+* console.debug
+* console.error
+* console.time
+* console.timeEnd
 
 #### request(Object)
-TODO
+发送Ajax请求，其接收一个对象所含参数为:
+* String uri: 请求地址
+* String method: 请求方法，可使用GET/POST/DELETE/HEAD/PUT，默认GET
+* String body: POST/DELETE/PUT的请求参数，可选
+* Object headers: 附加的HTTP Header信息， 可选
+* Function success: 请求成功的回调，可选
+* Function error: 请求失败的回调，可选
+```javascript
+// GET请求
+request({
+  uri: 'http://www.baidu.com',
+  method: 'GET',
+  headers: {
+    'X-AUTH': 'THIS IS YOUR AUTH KEY'
+  },
+  success: function(data){
+    console.log("status: " + data.status);
+    console.log("statusText: " + data.statusText);
+    console.log("text: " + data.text);
+  },
+  error: function(err){
+    console.log(err);
+  }
+});
+
+// POST请求
+request({
+  uri: 'http://www.baidu.com',
+  method: 'POST',
+  body: JSON.stringify({id: 1}),
+  success: function(data){
+    console.log("status: " + data.status);
+    console.log("statusText: " + data.statusText);
+    console.log("text: " + data.text);
+  },
+  error: function(err){
+    console.log(err);
+  }
+});
+```
 
 #### WebSocket
 
 ##### WebSocket(String url [, String protocols])
-TODO
+WebSocket构造函数。
+```javascript
+var ws = new WebSocket('wss://www.baidu.com');
+```
 
 ##### WebSocket.prototype.send(String|TypeArray)
-TODO
+向服务器发送字符串或二进制数据。
+```javascript
+var ws = new WebSocket('wss://www.baidu.com');
+ws.addEventListener('open', function(){
+  ws.send('Hello World!');
+  ws.send(new Uint8Array([1,2,3]));
+});
+```
 
 ##### WebSocket.prototype.close(void)
-TODO
+关闭WebSocket连接，并remove所有注册的事件。
+```javascript
+var ws = new WebSocket('wss://www.baidu.com');
+ws.close();
+```
 
 ##### WebSocketInstance.addEventListener(String eventName, Function handler)
-TODO
+SecurityWorker VM的addEventListener中支持3种标准事件:
+* open: 连接打开
+* message: 获得服务器发送的数据
+* error: 发生相关错误
+* close: 连接关闭
+```javascript
+var ws = new WebSocket('wss://www.baidu.com');
+ws.addEventListener('open', function(){
+  ws.send('ready');
+});
+
+ws.addEventListener('message', function(message){
+  if(message === 'close'){
+    ws.close();
+  }
+});
+
+ws.addEventListener('error', function(error){
+  console.log(error);
+});
+
+ws.addEventListener('close', function(){
+  // 不需要进行removeEventListener操作，
+  // 当调用close方法后自动解绑所有事件回调
+  console.log('ws client open')
+});
+```
 
 ##### WebSocketInstance.removeEventListener(String eventName, Function handler)
+SecurityWorker VM的addEventListener中支持3种标准事件:
+* open: 连接打开
+* message: 获得服务器发送的数据
+* error: 发生相关错误
+* close: 连接关闭
+```javascript
+var ws = new WebSocket('wss://www.baidu.com');
+ws.addEventListener('open', function(){
+  ws.send('ready');
+});
+
+function onmessage(message){
+  console.log(message);
+}
+
+ws.addEventListener('message', onmessage);
+
+setTimeout(function(){
+  ws.removeEventListener('message', onmessage);
+}, 1000);
+```
