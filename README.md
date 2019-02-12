@@ -152,7 +152,7 @@ sw.onterminate = function() {
 
 #### onmessage
 获取外部SecurityWorker实例发送的相关数据
-```
+```javascript
 onmessage = function(data) {
   if(typeof data == 'string') {
     console.log(data);
