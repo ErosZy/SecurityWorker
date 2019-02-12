@@ -147,7 +147,7 @@ sw.onterminate = function() {
 }
 ```
 
-### SecurityWorker VM API
+### 4. SecurityWorker VM API
 以下所有API只能在SecurityWorker VM中使用，外部环境的SecurityWorker实例及原型并未提供此类API。
 
 #### onmessage
