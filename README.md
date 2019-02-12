@@ -284,7 +284,7 @@ ws.close();
 ```
 
 ##### WebSocketInstance.addEventListener(String eventName, Function handler)
-SecurityWorker VM的addEventListener中支持3种标准事件:
+SecurityWorker VM的addEventListener中支持4种标准事件:
 * open: 连接打开
 * message: 获得服务器发送的数据
 * error: 发生相关错误
@@ -313,7 +313,7 @@ ws.addEventListener('close', function(){
 ```
 
 ##### WebSocketInstance.removeEventListener(String eventName, Function handler)
-SecurityWorker VM的addEventListener中支持3种标准事件:
+SecurityWorker VM的removeEventListener中支持4种标准事件:
 * open: 连接打开
 * message: 获得服务器发送的数据
 * error: 发生相关错误
