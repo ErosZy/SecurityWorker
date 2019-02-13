@@ -1,4 +1,4 @@
-## SecurityWorker文档
+## SecurityWorker文档（官网制作中，尽请期待）
 
 >SecurityWorker提供完全隐匿且兼容ECMAScript 5.1的类WebWorker的安全可信环境，
 帮助保护你的核心Javascript代码不被破解。SecurityWorker不同于普通的Javascript代码混淆，
