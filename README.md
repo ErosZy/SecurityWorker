@@ -5,11 +5,11 @@
 我们使用 *独立VM* + *二进制混淆SecurityWorker核心执行* 的方式防止您的代码被开发者工具调试、代码反向以及Node环境运行。
 
 * [特性](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
-* [兼容性](https://github.com/qiaozi-tech/SecurityWorker#1-%E5%85%BC%E5%AE%B9%E6%80%A7)
-* [快速开始](https://github.com/qiaozi-tech/SecurityWorker#2-%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B)
-* [SecurityWorker API](https://github.com/qiaozi-tech/SecurityWorker#3-securityworker-api)
-* [SecurityWorker VM API](https://github.com/qiaozi-tech/SecurityWorker#4-securityworker-vm-api)
-* [有一定安全风险的API](https://github.com/qiaozi-tech/SecurityWorker#5-%E6%9C%89%E4%B8%80%E5%AE%9A%E5%AE%89%E5%85%A8%E9%A3%8E%E9%99%A9%E7%9A%84api)
+* [兼容性](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
+* [快速开始](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
+* [SecurityWorker API](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
+* [SecurityWorker VM API](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
+* [有一定安全风险的API](https://github.com/qiaozi-tech/SecurityWorker#5-有一定安全风险的API)
 
 ### 0. 特性
 * 完整的ECMAScript 5.1标准兼容性
@@ -351,7 +351,7 @@ setTimeout(function(){
 
 ### 5. 有一定安全风险的API
 
-#### $$(String|Function) -> String
+#### $$(String) -> String
 $$函数是SecurityWorker VM内部的类预处理函数，其可以方便的在外部环境执行代码。它不同于提供的postMessage和onmessage方法，它是同步的，在编译阶段你的代码会被编译成属性访问，例如：
 ```javascript
 // sw.js
@@ -385,13 +385,10 @@ SecurityWorker.ready(function(){
   }
 });
 ```
-这里我们可以看到，攻击者很容易发现我们index.html中有传递location.href值的逻辑。但当我们使用$$预处理函数后，我们最终的代码会依靠VM转换为opcode后经过LLVM处理并进行高强度混淆后嵌入到编译后的代码之中，增强了隐匿性（但需要注意的是，由于代码仍然在最终编译后的文件中出现，因此可能带来不安全的风险，请斟酌使用）。
+这里我们可以看到，攻击者很容易发现我们index.html中有传递location.href值的逻辑。但当我们使用$$预处理函数后，我们最终的代码会依靠VM转换为opcode后经过LLVM处理并进行高强度混淆后嵌入到编译后的代码之中，增强了隐匿性（但需要注意的是，由于$$的整个逻辑涉及到两个不同环境的通信(Browser->SecurityWorker VM)，代码仍然在最终编译后的文件中出现，无法做到完全保密，因此可能带来不安全的风险，请斟酌使用。）
 ```javascript
 onmessage = function(data){
-  var location = $$(function(){
-    return widnow.location.href;
-  });
-
+  var location = $$('location.href');
   if(location.indexOf('your domain') > -1){
     request({
       uri: 'your url',
