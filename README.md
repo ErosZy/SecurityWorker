@@ -403,6 +403,8 @@ onmessage = function(data){
 }
 ```
 ```javascript
+// 因为访问window对象，因此必须在主线程中运行
+SecurityWorker.runMode = SecurityWorker.MAIN_THREAD_MODE;
 SecurityWorker.ready(function(){
   var sw = new SecurityWorker();
   sw.onmessage = function(data){
