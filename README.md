@@ -4,6 +4,13 @@
 帮助保护你的核心Javascript代码不被破解。SecurityWorker不同于普通的Javascript代码混淆，
 我们使用 *独立VM* + *二进制混淆SecurityWorker核心执行* 的方式防止您的代码被开发者工具调试、代码反向以及Node环境运行。
 
+* [特性](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
+* [兼容性](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
+* [快速开始](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
+* [SecurityWorker API](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
+* [SecurityWorker VM API](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
+* [有一定安全风险的API](https://github.com/qiaozi-tech/SecurityWorker#5-有一定安全风险的API)
+
 ### 0. 特性
 * 完整的ECMAScript 5.1标准兼容性
 * 极小的SecruityWorker VM文件体积（~160kb）
@@ -77,6 +84,12 @@ onmessage = function(data) {
 恭喜你已经完全掌握SecurityWorker的使用了，进一步查看[SecurityWorker](https://github.com/qiaozi-tech/SecurityWorker#3-securityworker-api)和[SecurityWorker VM](https://github.com/qiaozi-tech/SecurityWorker#4-securityworker-vm-api)提供的API帮助你更好的运用SecurityWorker。
 
 ### 3. SecurityWorker API
+
+#### SecurityWorker.runMode
+设定SecurityWorker VM执行的环境，有3个选择:
+* SecurityWorker.AUTO_MODE: 自动选择运行于WebWorker还是浏览器主线程中，推荐的默认值
+* SecurityWorker.WORKER_THREAD_MODE: 强制运行于WebWorker环境中，由于某些浏览器的WebWorker环境有一些兼容性问题，因此对于需要兼容性的应用不推荐此选项
+* SecurityWorker.MAIN_THREAD_MODE: 强制运行于浏览器主线程中，兼容性很好，但是对于较老的设备可能会导致页面较长时间无响应
 
 #### SecurityWorker(void)
 SecurityWorker构造函数，用于创建一个SecurityWorker实例。但请注意，实例的创建需要在SecurityWorker.ready调用后进行创建，否则将有几率导致SecurityWorker VM内存分配失败。
@@ -334,4 +347,63 @@ ws.addEventListener('message', onmessage);
 setTimeout(function(){
   ws.removeEventListener('message', onmessage);
 }, 1000);
+```
+
+### 5. 有一定安全风险的API
+
+#### $$(String) -> String
+$$函数是SecurityWorker VM内部的类预处理函数，其可以方便的在外部环境执行代码。它不同于提供的postMessage和onmessage方法，它是同步的，在编译阶段你的代码会被编译成属性访问，例如：
+```javascript
+// sw.js
+var location = $$('window.location.href');
+
+// 编译后实际代码为
+var location = $$[0];
+```
+此预处理函数的出现主要是针对使用postMessage容易暴露行为的场景。假设我们的SecurityWorker VM的代码需要首先判断当前的Domain后再决定是否进行数据请求，当我们不使用$$时，我们的代码如下：
+```javascript
+// sw.js
+onmessage = function(data){
+  if(data.indexOf('your domain') > -1){
+    request({
+      uri: 'your url', 
+      success: function(data){
+        postMessage(data.text);
+    }});
+  }  
+}
+```
+```javascript
+// your index.html
+SecurityWorker.ready(function(){
+  var sw = new SecurityWorker();
+  sw.oncreate = function(){
+    sw.postMessage(location.href);
+  }
+  sw.onmessage = function(data){
+    console.log(data);
+  }
+});
+```
+这里我们可以看到，攻击者很容易发现我们index.html中有传递location.href值的逻辑。但当我们使用$$预处理函数后，我们最终的代码会依靠VM转换为opcode后经过LLVM处理并进行高强度混淆后嵌入到编译后的代码之中，增强了隐匿性（但需要注意的是，由于代码仍然在最终编译后的文件中出现，因此可能带来不安全的风险，请斟酌使用。）
+```javascript
+onmessage = function(data){
+  var location = $$('location.href');
+  if(location.indexOf('your domain') > -1){
+    request({
+      uri: 'your url',
+      success: function(data){
+        postMessage(data.text);
+      }
+    });
+  }
+}
+```
+```javascript
+SecurityWorker.ready(function(){
+  var sw = new SecurityWorker();
+  sw.onmessage = function(data){
+    console.log(data);
+  }
+});
 ```
