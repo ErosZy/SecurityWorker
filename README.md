@@ -57,18 +57,18 @@ onmessage = function(data) {
           sw.oncreate = function() {
             console.log('ready');
             sw.postMessage('ping');
-          }
+          };
           
           // 获取SecurityWorker传递的数据
           sw.onmessage = function(data) {
             console.log('MainThread recv: ' + data);
             sw.terminate();
-          }
+          };
           
           // SecurityWorker销毁事件
           sw.onterminate = function() {
             console.log('terminate');
-          }
+          };
         });
     </script>
 </body>
@@ -77,7 +77,7 @@ onmessage = function(data) {
 最后我们访问index.html即可看到控制台完整打印出如下结果:
 ```shell
 > ready
-> SecurityWorker recv: ping
+> [LOG] SecurityWorker recv: ping
 > MainThread recv: pong
 > terminate
 ```
@@ -351,16 +351,16 @@ setTimeout(function(){
 
 ### 5. 有一定安全风险的API
 
-#### $$(String) -> String
-$$函数是SecurityWorker VM内部的类预处理函数，其可以方便的在外部环境执行代码。它不同于提供的postMessage和onmessage方法，它是同步的，在编译阶段你的代码会被编译成属性访问，例如：
+#### $(String) -> String
+$函数是SecurityWorker VM内部的类预处理函数，其可以方便的在外部环境执行代码。它不同于提供的postMessage和onmessage方法，它是同步的，在编译阶段你的代码会被编译成属性访问，例如：
 ```javascript
 // sw.js
-var location = $$('window.location.href');
+var location = $('window.location.href');
 
 // 编译后实际代码为
-var location = $$[0];
+var location = $[0];
 ```
-此预处理函数的出现主要是针对使用postMessage容易暴露行为的场景。假设我们的SecurityWorker VM的代码需要首先判断当前的Domain后再决定是否进行数据请求，当我们不使用$$时，我们的代码如下：
+此预处理函数的出现主要是针对使用postMessage容易暴露行为的场景。假设我们的SecurityWorker VM的代码需要首先判断当前的Domain后再决定是否进行数据请求，当我们不使用$时，我们的代码如下：
 ```javascript
 // sw.js
 onmessage = function(data){
@@ -385,10 +385,10 @@ SecurityWorker.ready(function(){
   }
 });
 ```
-这里我们可以看到，攻击者很容易发现我们index.html中有传递location.href值的逻辑。但当我们使用$$预处理函数后，我们最终的代码会依靠VM转换为opcode后经过LLVM处理并进行高强度混淆后嵌入到编译后的代码之中，增强了隐匿性（但需要注意的是，由于$$的整个逻辑涉及到从不隐匿环境（Browser）到隐匿环境（Security Worker）的数据传递，代码仍然在最终编译后的文件中出现，无法做到完全保密，因此可能带来不安全的风险，请斟酌使用。）
+这里我们可以看到，攻击者很容易发现我们index.html中有传递location.href值的逻辑。但当我们使用$预处理函数后，我们最终的代码会依靠VM转换为opcode后经过LLVM处理并进行高强度混淆后嵌入到编译后的代码之中，增强了隐匿性（但需要注意的是，由于$的整个逻辑涉及到从不隐匿环境（Browser）到隐匿环境（Security Worker）的数据传递，代码仍然在最终编译后的文件中出现，无法做到完全保密，因此可能带来不安全的风险，请斟酌使用。）
 ```javascript
 onmessage = function(data){
-  var location = $$('location.href');
+  var location = $('location.href');
   if(location.indexOf('your domain') > -1){
     request({
       uri: 'your url',
