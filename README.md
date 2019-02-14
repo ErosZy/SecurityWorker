@@ -385,7 +385,7 @@ SecurityWorker.ready(function(){
   }
 });
 ```
-这里我们可以看到，攻击者很容易发现我们index.html中有传递location.href值的逻辑。但当我们使用$$预处理函数后，我们最终的代码会依靠VM转换为opcode后经过LLVM处理并进行高强度混淆后嵌入到编译后的代码之中，增强了隐匿性（但需要注意的是，由于$$的整个逻辑涉及到两个不同环境的数据传递(Browser->SecurityWorker VM)，代码仍然在最终编译后的文件中出现，无法做到完全保密，因此可能带来不安全的风险，请斟酌使用。）
+这里我们可以看到，攻击者很容易发现我们index.html中有传递location.href值的逻辑。但当我们使用$$预处理函数后，我们最终的代码会依靠VM转换为opcode后经过LLVM处理并进行高强度混淆后嵌入到编译后的代码之中，增强了隐匿性（但需要注意的是，由于$$的整个逻辑涉及到从不隐匿环境（Browser）到隐匿环境（Security Worker）的数据传递，代码仍然在最终编译后的文件中出现，无法做到完全保密，因此可能带来不安全的风险，请斟酌使用。）
 ```javascript
 onmessage = function(data){
   var location = $$('location.href');
