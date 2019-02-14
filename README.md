@@ -5,11 +5,11 @@
 我们使用 *独立VM* + *二进制混淆SecurityWorker核心执行* 的方式防止您的代码被开发者工具调试、代码反向以及Node环境运行。
 
 * [特性](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
-* [兼容性](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
-* [快速开始](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
-* [SecurityWorker API](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
-* [SecurityWorker VM API](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
-* [有一定安全风险的API](https://github.com/qiaozi-tech/SecurityWorker#5-有一定安全风险的API)
+* [兼容性](https://github.com/qiaozi-tech/SecurityWorker#1-%E5%85%BC%E5%AE%B9%E6%80%A7)
+* [快速开始](https://github.com/qiaozi-tech/SecurityWorker#1-%E5%85%BC%E5%AE%B9%E6%80%A7)
+* [SecurityWorker API](https://github.com/qiaozi-tech/SecurityWorker#1-%E5%85%BC%E5%AE%B9%E6%80%A7)
+* [SecurityWorker VM API](https://github.com/qiaozi-tech/SecurityWorker#1-%E5%85%BC%E5%AE%B9%E6%80%A7)
+* [有一定安全风险的API](https://github.com/qiaozi-tech/SecurityWorker#1-%E5%85%BC%E5%AE%B9%E6%80%A7)
 
 ### 0. 特性
 * 完整的ECMAScript 5.1标准兼容性
