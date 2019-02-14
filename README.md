@@ -351,7 +351,7 @@ setTimeout(function(){
 
 ### 5. 有一定安全风险的API
 
-#### $$(String) -> String
+#### $$(String|Function) -> String
 $$函数是SecurityWorker VM内部的类预处理函数，其可以方便的在外部环境执行代码。它不同于提供的postMessage和onmessage方法，它是同步的，在编译阶段你的代码会被编译成属性访问，例如：
 ```javascript
 // sw.js
@@ -388,7 +388,10 @@ SecurityWorker.ready(function(){
 这里我们可以看到，攻击者很容易发现我们index.html中有传递location.href值的逻辑。但当我们使用$$预处理函数后，我们最终的代码会依靠VM转换为opcode后经过LLVM处理并进行高强度混淆后嵌入到编译后的代码之中，增强了隐匿性（但需要注意的是，由于代码仍然在最终编译后的文件中出现，因此可能带来不安全的风险，请斟酌使用。）
 ```javascript
 onmessage = function(data){
-  var location = $$('location.href');
+  var location = $$(function(){
+    return widnow.location.href;
+  });
+
   if(location.indexOf('your domain') > -1){
     request({
       uri: 'your url',
