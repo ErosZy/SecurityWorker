@@ -418,13 +418,13 @@ SecurityWorker VM与V8等强调性能的Javascript引擎不同，SecurityWorker 
 #### 尽可能减少指令
 由于SecurityWorker VM并没有JIT，因此你所熟悉的一些优化手段可能会在SecurityWorker VM中失效。不要寄希望于SecurityWorker会优化你的代码，他目前并不智能（笑），任何多余的Javascript代码操作都会增加运行时的开销，例如：
 ```javascript
-let i = 1000, x = 0;
+var i = 1000, x = 0;
 while( i-- ) x++;
 ```
 相比于
 ```javascript
-let x = 0;
-for( let j = 0; j < 1000; j++ ) x++;
+var x = 0;
+for( var j = 0; j < 1000; j++ ) x++;
 ```
 在SecurityWorker VM中将会快15%，因为for循环中我们额外的引入了比较操作（j < 1000）。但对于此并不需要感到紧张，我们的建议是仍然按照你的方式编写代码，在需要深度的优化的时候再进行考虑，因为在SecurityWorker VM中我们运行CPU密集型任务的场景并不多，大部分是I/O操作，这很难成为你代码的性能瓶颈。
 
