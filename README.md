@@ -426,17 +426,17 @@ while( i-- ) x++;
 let x = 0;
 for( let j = 0; j < 1000; j++ ) x++;
 ```
-在SecurityWorker VM中将会慢15%，因为for循环中我们额外的引入了比较操作（j < 1000）。但对于此并不需要感到紧张，我们的建议是仍然按照你的方式编写代码，在需要深度的优化的时候再进行考虑，因为在SecurityWorker VM中我们运行CPU密集型任务的场景并不多，大部分是I/O操作，这很难成为你代码的性能瓶颈。
+在SecurityWorker VM中将会快15%，因为for循环中我们额外的引入了比较操作（j < 1000）。但对于此并不需要感到紧张，我们的建议是仍然按照你的方式编写代码，在需要深度的优化的时候再进行考虑，因为在SecurityWorker VM中我们运行CPU密集型任务的场景并不多，大部分是I/O操作，这很难成为你代码的性能瓶颈。
 
 #### 浮点数有很高的代价
-Javascript的Number类型包含了Int和Float，同时根据ECMA-262标准的要求，我们需要通过一个浮点数指针来实现64-bit IEEE math。但是对于SecurityWorker VM内部，我们考虑到内存占用的问题对Int和Float实际上进行了更细的区分，因此在大部分测试下Int的相关操作相比于Float数会更快，占用内存会更少。
+Javascript的Number类型包含了Int和Float，同时根据ECMA-262标准的要求，我们需要通过一个浮点数指针来实现64-bit IEEE Math操作。但是对于SecurityWorker VM内部，我们考虑到内存占用的问题对Int和Float实际上进行了更细的区分，因此在大部分测试下Int的相关操作相比于Float数会更快，占用内存会更少。
 ```javascript
 var a = 1; // 4 bytes
 var a = 0.5; // 12 bytes
 ```
 
 #### 尽可能使用TypedArray
-当你数组中的类型明确为Number时，我们强烈建议你使用TypedArray来解决你的问题。因为对于TypedArray来说，我们可以明确的类型，省去了类型包装的花销，并且我们不需要自动的进行数组的resize操作，因此它会相比与普通数组来说会更快更省内存。
+当你数组中的类型明确为Number时，我们强烈建议你使用TypedArray来解决你的问题。对于TypedArray来说，我们可以明确的类型，省去了类型包装的花销，并且我们不需要自动的进行数组的resize操作，因此它会相比与普通数组来说会更快更省内存。
 ```javascript
 var b = Array( 1024 ); // 4KB for the array with values
 for( var i = 0; i++; i < 1024 ) b[ i ] = i + 0.5; // + 8KB with floats
