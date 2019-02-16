@@ -1,7 +1,7 @@
 ## SecurityWorker Beta 文档（官网制作中，敬请期待）
 
 >SecurityWorker提供完全隐匿且兼容ECMAScript 5.1的类WebWorker的安全可信环境，帮助保护你的核心Javascript代码不被破解。
-SecurityWorker不同于普通的Javascript代码混淆，我们使用 *独立Javascript VM* + *二进制混淆SecurityWorker VM核心执行* 的方式防止您的代码被开发者工具调试、代码反向。
+SecurityWorker不同于普通的Javascript代码混淆，我们使用 *独立Javascript VM* + *二进制混淆opcode核心执行* 的方式防止您的代码被开发者工具调试、代码反向。
 
 * [特性](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
 * [兼容性](https://github.com/qiaozi-tech/SecurityWorker#1-%E5%85%BC%E5%AE%B9%E6%80%A7)
@@ -409,6 +409,7 @@ SecurityWorker.ready(function(){
   }
 });
 ```
+<<<<<<< HEAD
 
 ### 6. 性能优化建议
 SecurityWorker VM与V8等强调性能的Javascript引擎不同，SecurityWorker VM主要目标是更小的emscripten生成体积以及更少的内存使用。对于SecurityWorker VM来说，我们并没有集成类似V8一样的JIT机制，而是使用通过离线AOT你的Javascript代码为SecurityWorker VM指令，然后在运行时解释执行的方式，因此在性能上会有一定的损失。<br/>
@@ -446,3 +447,5 @@ var a = new Float32Array( 1024 );
 
 #### 当出现无法解决的性能问题
 反复测试并联系我们，帮助我们让SecurityWorker变得更好（笑）。
+=======
+>>>>>>> 9fef6300dc24fb784400cd205fb2e1a41b9a4b2a
