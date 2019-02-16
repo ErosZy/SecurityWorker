@@ -413,7 +413,7 @@ SecurityWorker.ready(function(){
 
 ### 6. 性能优化建议
 SecurityWorker VM与V8等强调性能的Javascript引擎不同，SecurityWorker VM主要目标是更小的emscripten生成体积以及更少的内存使用。对于SecurityWorker VM来说，我们并没有集成类似V8一样的JIT机制，而是使用通过离线AOT你的Javascript代码为SecurityWorker VM指令，然后在运行时解释执行的方式，因此在性能上会有一定的损失。<br/>
-相较于最新版本的V8 JIT优化后的代码，纯CPU计算（执行10000次）性能相差7-8倍，I/O任务由于使用了原生环境的功能，性能水平持平。但在实际应用中，我们使用SecurityWorker VM的WebSocket每20ms接收10k加密字符串并进行纯Javascript的AES256的解密操作，整体与原生环境相差不大（ Intel Core i5 2.3GHz 占用：2.3% vs 1.8% ）。
+相较于最新版本的V8 JIT优化后的代码，纯CPU计算性能相差7-8倍（执行10000次），I/O任务由于使用了原生环境的功能，性能大体持平。在实际应用中，我们使用SecurityWorker VM的WebSocket每20ms接收10k加密字符串并进行纯Javascript的AES256的解密操作这一任务与原生环境测试结果相比并不大（ Intel Core i5 2.3GHz 平均占用：2.3% vs 1.8% ）。
 
 #### 尽可能减少指令
 由于SecurityWorker VM并没有JIT，因此你所熟悉的一些优化手段可能会在SecurityWorker VM中失效。不要寄希望于SecurityWorker会优化你的代码，他目前并不智能（笑），任何多余的Javascript代码操作都会增加运行时的开销，例如：
