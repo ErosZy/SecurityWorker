@@ -409,3 +409,40 @@ SecurityWorker.ready(function(){
   }
 });
 ```
+
+### 6. 性能优化建议
+SecurityWorker VM与V8等强调性能的Javascript引擎不同，SecurityWorker VM主要目标是更小的emscripten生成体积以及更少的内存使用。对于SecurityWorker VM来说，我们并没有集成类似V8一样的JIT机制，而是使用通过离线AOT你的Javascript代码为SecurityWorker VM指令，然后在运行时解释执行的方式，因此在性能上会有一定的损失。<br/>
+相较于最新版本的V8 JIT优化后的代码，纯CPU计算（执行10000次）性能相差7-8倍，I/O任务由于使用了原生环境的功能，性能水平持平。但在实际应用中，我们使用SecurityWorker VM的WebSocket每20ms接收10k加密字符串并进行纯Javascript的AES256的解密操作，整体与原生环境相差不大（ Intel Core i5 2.3GHz 占用：2.3% vs 1.8% ）。
+
+#### 尽可能减少指令
+由于SecurityWorker VM并没有JIT，因此你所熟悉的一些优化手段可能会在SecurityWorker VM中失效。不要寄希望于SecurityWorker会优化你的代码，他目前并不智能（笑），任何多余的Javascript代码操作都会增加运行时的开销，例如：
+```javascript
+let i = 1000, x = 0;
+while( i-- ) x++;
+```
+相比于
+```javascript
+let x = 0;
+for( let j = 0; j < 1000; j++ ) x++;
+```
+在SecurityWorker VM中将会慢15%，因为for循环中我们额外的引入了比较操作（j < 1000）。但对于此并不需要感到紧张，我们的建议是仍然按照你的方式编写代码，在需要深度的优化的时候再进行考虑，因为在SecurityWorker VM中我们运行CPU密集型任务的场景并不多，大部分是I/O操作，这很难成为你代码的性能瓶颈。
+
+#### 浮点数有很高的代价
+Javascript的Number类型包含了Int和Float，同时根据ECMA-262标准的要求，我们需要通过一个浮点数指针来实现64-bit IEEE math。但是对于SecurityWorker VM内部，我们考虑到内存占用的问题对Int和Float实际上进行了更细的区分，因此在大部分测试下Int的相关操作相比于Float数会更快，占用内存会更少。
+```javascript
+var a = 1; // 4 bytes
+var a = 0.5; // 12 bytes
+```
+
+#### 尽可能使用TypedArray
+当你数组中的类型明确为Number时，我们强烈建议你使用TypedArray来解决你的问题。因为对于TypedArray来说，我们可以明确的类型，省去了类型包装的花销，并且我们不需要自动的进行数组的resize操作，因此它会相比与普通数组来说会更快更省内存。
+```javascript
+var b = Array( 1024 ); // 4KB for the array with values
+for( var i = 0; i++; i < 1024 ) b[ i ] = i + 0.5; // + 8KB with floats
+
+// Just 4KB allocated
+var a = new Float32Array( 1024 );
+```
+
+#### 当出现无法解决的性能问题
+反复测试并联系我们，帮助我们让SecurityWorker变得更好（笑）。
