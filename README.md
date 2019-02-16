@@ -412,7 +412,7 @@ SecurityWorker.ready(function(){
 ```
 
 ### 6. 性能优化建议
-SecurityWorker VM与V8等强调性能的Javascript引擎不同，SecurityWorker VM主要目标是更小的emscripten生成体积以及更少的内存使用。对于SecurityWorker VM来说，我们并没有集成类似V8一样的JIT机制，而是使用通过离线AOT你的Javascript代码为SecurityWorker VM指令，然后在运行时解释执行的方式，因此在性能上会有一定的损失。<br/>
+SecurityWorker VM与V8等强调性能的Javascript引擎不同，SecurityWorker VM主要目标是更小的emscripten生成体积以及更少的内存使用。对于SecurityWorker VM来说，我们并没有集成类似V8一样的JIT机制，而是使用通过离线翻译你的Javascript代码为SecurityWorker VM指令，然后在运行时解释执行的方式，因此在性能上会有一定的损失。<br/>
 相较于最新版本的V8 JIT优化后的代码，纯CPU计算性能相差7-8倍（执行10000次），I/O任务由于使用了原生环境的功能，性能大体持平。在实际应用中，我们使用SecurityWorker VM的WebSocket每20ms接收10k加密字符串并进行纯Javascript的AES256的解密操作这一任务与原生环境测试结果相比并不大（ Intel Core i5 2.3GHz 平均占用：2.3% vs 1.8% ）。
 
 #### 尽可能减少指令
@@ -436,7 +436,7 @@ var a = 0.5; // 12 bytes
 ```
 
 #### 尽可能使用TypedArray
-当你数组中的类型明确为Number时，我们强烈建议你使用TypedArray来解决你的问题。对于TypedArray来说，我们可以明确的类型，省去了类型包装的花销，并且我们不需要自动的进行数组的resize操作，因此它会相比与普通数组来说会更快更省内存。
+当你数组中的类型明确为Number时，我们强烈建议你使用TypedArray来解决你的问题。对于TypedArray来说，我们可以明确类型同时省去类型包装的花销，并且不需要自动的进行数组的resize操作，因此相比与普通数组来说会更快更省内存。
 ```javascript
 var b = Array( 1024 ); // 4KB for the array with values
 for( var i = 0; i++; i < 1024 ) b[ i ] = i + 0.5; // + 8KB with floats
