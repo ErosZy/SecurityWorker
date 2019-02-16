@@ -9,6 +9,7 @@ SecurityWorker不同于普通的Javascript代码混淆，我们使用 *独立Jav
 * [SecurityWorker API](https://github.com/qiaozi-tech/SecurityWorker#3-securityworker-api)
 * [SecurityWorker VM API](https://github.com/qiaozi-tech/SecurityWorker#4-securityworker-vm-api)
 * [有一定安全风险的API](https://github.com/qiaozi-tech/SecurityWorker#5-%E6%9C%89%E4%B8%80%E5%AE%9A%E5%AE%89%E5%85%A8%E9%A3%8E%E9%99%A9%E7%9A%84api)
+* [性能优化建议](https://github.com/qiaozi-tech/SecurityWorker/blob/master/README.md#6-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%BB%BA%E8%AE%AE)
 
 ### 0. 特性
 * 完整的ECMAScript 5.1标准兼容性
@@ -409,7 +410,6 @@ SecurityWorker.ready(function(){
   }
 });
 ```
-<<<<<<< HEAD
 
 ### 6. 性能优化建议
 SecurityWorker VM与V8等强调性能的Javascript引擎不同，SecurityWorker VM主要目标是更小的emscripten生成体积以及更少的内存使用。对于SecurityWorker VM来说，我们并没有集成类似V8一样的JIT机制，而是使用通过离线AOT你的Javascript代码为SecurityWorker VM指令，然后在运行时解释执行的方式，因此在性能上会有一定的损失。<br/>
@@ -447,5 +447,3 @@ var a = new Float32Array( 1024 );
 
 #### 当出现无法解决的性能问题
 反复测试并联系我们，帮助我们让SecurityWorker变得更好（笑）。
-=======
->>>>>>> 9fef6300dc24fb784400cd205fb2e1a41b9a4b2a
