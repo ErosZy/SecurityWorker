@@ -15,10 +15,10 @@
 * 完整的ECMAScript 5.1标准兼容性
 * 极小的SecruityWorker VM文件体积（~160kb）
 * 保密性极强，执行逻辑及核心算法完全隐匿不可逆
+* 支持多种环境，Browser/NodeJS/小程序
 * 良好的浏览器兼容性，主流浏览器全覆盖
 * 易于使用，API兼容WebWorker
 * 易于调试，被保护代码不做混淆，报错信息准确
-* 支持多种环境，Browser/NodeJS(Doing)/小程序(Doing)
 
 ### 1. 兼容性
 * IE11
@@ -28,6 +28,8 @@
 * Edge 12+ 
 * Android 4.4.4+ 
 * iOS 8+
+* NodeJS V4+(Doing)
+* 小程序(Doing)
 
 ### 2. 快速开始
 我们以一个Ping-Pong的示例程序讲解SecurityWorker的基本使用，首先我们创建sw.js用于实现SecurityWorker VM的内部业务逻辑:
