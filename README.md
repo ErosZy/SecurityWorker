@@ -14,7 +14,7 @@ SecurityWorker不同于普通的Javascript代码混淆，我们使用 *独立Jav
 * 完整的ECMAScript 5.1标准兼容性
 * 极小的SecruityWorker VM文件体积（~160kb）
 * 保密性极强，执行逻辑及核心算法完全隐匿不可逆
-* 可选择支持多种环境，Browser/NodeJS/小程序
+* 可选择支持多种环境，Browser/NodeJS/小程序（默认不允许NodeJS黑盒运行）
 * 良好的浏览器兼容性，主流浏览器全覆盖
 * 易于使用，API兼容WebWorker
 * 易于调试，被保护代码不做混淆，报错信息准确
