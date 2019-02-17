@@ -391,7 +391,21 @@ SecurityWorker.ready(function(){
 这里我们可以看到，攻击者很容易发现我们index.html中有传递location.href值的逻辑。但当我们使用$预处理函数后，我们最终的代码会依靠VM转换为opcode经过LLVM处理并进行高强度混淆后嵌入到编译后的代码之中，增强了隐匿性（但需要注意的是，由于$的整个逻辑涉及到从不隐匿环境（Browser）到隐匿环境（SecurityWorker VM）的数据传递，代码仍然在最终编译后的文件中出现，无法做到完全保密，因此可能带来不安全的风险，请斟酌使用）。
 ```javascript
 onmessage = function(data){
-  var location = $('location.href');
+  var location = $(function(){
+    // 以下代码在宿主环境中运行
+    // SecurityWorker会在编译期进行混淆并嵌入到生成代码中
+    // 尽管只是代码的混淆，但是我们再隐藏下真正的数据序列
+    var l = location.href;
+    return l.split('').map(function(v){
+      return v.charCodeAt(0) << 4 + 128;
+    }).join(',');
+  });
+
+  // 下面的代码已经被编译为SecurityWorker VM的opcode，执行在安全环境
+  location = location.split(',').map(function(v){
+    return String.fromCharCode((v - 128) >> 4);
+  });
+
   if(location.indexOf('your domain') > -1){
     request({
       uri: 'your url',
