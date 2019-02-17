@@ -419,6 +419,9 @@ onmessage = function(data){
 ```javascript
 SecurityWorker.ready(function(){
   var sw = new SecurityWorker();
+  sw.oncreate = function(){
+    sw.postMessage('What Ever You Want');
+  }
   sw.onmessage = function(data){
     console.log(data);
   }
