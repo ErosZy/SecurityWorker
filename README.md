@@ -1,4 +1,4 @@
-## SecurityWorker Beta 文档（官网制作中，敬请期待）
+## SecurityWorker文档（Beta）
 
 >SecurityWorker提供完全隐匿且兼容ECMAScript 5.1的类WebWorker的安全可信环境，帮助保护你的核心Javascript代码不被破解。
 SecurityWorker不同于普通的Javascript代码混淆，我们使用 *独立Javascript VM* + *二进制混淆opcode核心执行* 的方式防止您的代码被开发者工具调试、代码反向。
@@ -9,7 +9,7 @@ SecurityWorker不同于普通的Javascript代码混淆，我们使用 *独立Jav
 * [SecurityWorker API](https://github.com/qiaozi-tech/SecurityWorker#3-securityworker-api)
 * [SecurityWorker VM API](https://github.com/qiaozi-tech/SecurityWorker#4-securityworker-vm-api)
 * [有一定安全风险的API](https://github.com/qiaozi-tech/SecurityWorker#5-%E6%9C%89%E4%B8%80%E5%AE%9A%E5%AE%89%E5%85%A8%E9%A3%8E%E9%99%A9%E7%9A%84api)
-* [性能优化建议](https://github.com/qiaozi-tech/SecurityWorker/blob/master/README.md#6-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%BB%BA%E8%AE%AE)
+* [性能优化建议](https://github.com/qiaozi-tech/SecurityWorker#6-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%BB%BA%E8%AE%AE)
 
 ### 0. 特性
 * 完整的ECMAScript 5.1标准兼容性
@@ -440,7 +440,7 @@ while( i-- ) x++;
 var x = 0;
 for( var j = 0; j < 1000; j++ ) x++;
 ```
-在SecurityWorker VM中将会快15%，因为for循环中我们额外的引入了比较操作（j < 1000）。但对于此并不需要感到紧张，我们的建议是仍然按照你的方式编写代码，在需要深度优化的时候再进行考虑，因为在SecurityWorker VM中我们运行CPU密集型任务的场景并不多，大部分是I/O操作，这很难成为你代码的性能瓶颈。
+在SecurityWorker VM中将会快15%，因为for循环中我们额外的引入了比较操作（j < 1000）。但对于此并不需要感到紧张，我们的建议是仍然按照你的方式编写代码，在需要深度优化的时候再进行考虑，因为在SecurityWorker VM中我们持续运行CPU密集型任务的场景并不多，大部分是等待I/O，这很难成为你代码的性能瓶颈。
 
 #### 浮点数有很高的代价
 Javascript的Number类型包含了Int和Float，同时根据ECMA-262标准的要求，我们需要通过一个浮点数指针来实现64-bit IEEE Math操作。但是对于SecurityWorker VM内部，我们考虑到内存占用的问题对Int和Float实际上进行了更细的区分，因此在大部分测试下Int的相关操作相比于Float会更快，占用内存会更少。
