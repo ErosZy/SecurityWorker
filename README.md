@@ -33,7 +33,7 @@ SecurityWorker不同于普通的Javascript代码混淆，我们使用 *独立Jav
 * 小程序(Doing)
 
 ### 2. 快速开始
-我们以一个Ping-Pong的示例程序讲解SecurityWorker的基本使用，首先我们创建sw.js用于实现SecurityWorker VM的内部业务逻辑:
+我们以一个[Ping-Pong](https://github.com/qiaozi-tech/SecurityWorker/tree/master/example/basic)的示例程序讲解SecurityWorker的基本使用，首先我们创建sw.js用于实现SecurityWorker VM的内部业务逻辑:
 ```javascript
 // sw.js
 onmessage = function(data) {
