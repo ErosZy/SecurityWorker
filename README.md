@@ -10,6 +10,7 @@ SecurityWorker不同于普通的Javascript代码混淆，我们使用 *独立Jav
 * [SecurityWorker VM API](https://github.com/qiaozi-tech/SecurityWorker#4-securityworker-vm-api)
 * [有一定安全风险的API](https://github.com/qiaozi-tech/SecurityWorker#5-%E6%9C%89%E4%B8%80%E5%AE%9A%E5%AE%89%E5%85%A8%E9%A3%8E%E9%99%A9%E7%9A%84api)
 * [性能优化建议](https://github.com/qiaozi-tech/SecurityWorker#6-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%BB%BA%E8%AE%AE)
+* [Roadmap](https://github.com/qiaozi-tech/SecurityWorker#7-roadmap)
 
 ### 0. 特性
 * 完整的ECMAScript 5.1标准兼容性
@@ -464,3 +465,10 @@ var a = new Float32Array( 2048 );
 
 #### 当出现无法解决的性能问题
 反复测试并联系我们，帮助我们让SecurityWorker变得更好（笑）。
+
+
+### 7. Roadmap
+* 增加SecurityWorker的onerror回调，返回SecurityWorker VM内部的未被捕获的错误
+* 提供小程序的环境支持
+* 提供NodeJS的环境支持
+* 进一步优化生成的opcode大小
