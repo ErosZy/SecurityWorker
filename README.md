@@ -3,7 +3,7 @@
 >SecurityWorker提供完全隐匿且兼容ECMAScript 5.1的类WebWorker的安全可信环境，帮助保护你的核心Javascript代码不被破解。
 SecurityWorker不同于普通的Javascript代码混淆，我们使用 *独立Javascript VM* + *二进制混淆opcode核心执行* 的方式防止您的代码被开发者工具调试、代码反向。
 
-#### 欢迎访问https://www.securitify.io使用v1.0版本
+#### 欢迎访问 https://www.securitify.io 使用v1.0版本
 
 * [特性](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
 * [兼容性](https://github.com/qiaozi-tech/SecurityWorker#1-%E5%85%BC%E5%AE%B9%E6%80%A7)
