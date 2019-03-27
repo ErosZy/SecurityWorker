@@ -1,4 +1,4 @@
-## SecurityWorker文档（v1.0）
+## SecurityWorker文档（V1.0.1）
 
 >SecurityWorker提供完全隐匿且兼容ECMAScript 5.1的类WebWorker的安全可信环境，帮助保护你的核心Javascript代码不被破解。
 SecurityWorker不同于普通的Javascript代码混淆，我们使用 *独立Javascript VM* + *二进制混淆opcode核心执行* 的方式防止您的代码被开发者工具调试、代码反向。
@@ -29,7 +29,7 @@ SecurityWorker不同于普通的Javascript代码混淆，我们使用 *独立Jav
 * Safari 8+ 
 * Firefox 4+ 
 * Edge 12+ 
-* Android 4.4.4+ 
+* Android 4.2+ 
 * iOS 8+
 * NodeJS V4+(Doing)
 * 小程序(Doing)
