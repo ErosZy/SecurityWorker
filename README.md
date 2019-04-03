@@ -21,12 +21,13 @@
 
 ### 1. 兼容性
 * IE11
-* Chrome 20+ 
-* Safari 8+ 
-* Firefox 4+ 
-* Edge 12+ 
-* Android 4.4.4+ 
-* iOS 8+
+* Chrome 24+ 
+* Safari 6.2+ 
+* Firefox 16+ 
+* Edge 15+
+* Android 4.4.2+ 
+* iOS Safari 8+
+* iOS WebView 9+
 
 ### 2. 快速开始
 我们以一个Ping-Pong的示例程序讲解SecurityWorker的基本使用，首先我们创建sw.js用于实现SecurityWorker VM的内部业务逻辑:
