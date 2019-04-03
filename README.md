@@ -1,8 +1,9 @@
-## SecurityWorker文档（官网制作中，敬请期待）
+## SecurityWorker文档（V1.0.1）
 
->SecurityWorker提供完全隐匿且兼容ECMAScript 5.1的类WebWorker的安全可信环境，
-帮助保护你的核心Javascript代码不被破解。SecurityWorker不同于普通的Javascript代码混淆，
-我们使用 *独立VM* + *二进制混淆SecurityWorker核心执行* 的方式防止您的代码被开发者工具调试、代码反向以及Node环境运行。
+>SecurityWorker提供完全隐匿且兼容ECMAScript 5.1的类WebWorker的安全可信环境，帮助保护你的核心Javascript代码不被破解。
+SecurityWorker不同于普通的Javascript代码混淆，我们使用 *独立Javascript VM* + *二进制混淆opcode核心执行* 的方式防止您的代码被开发者工具调试、代码反向。
+
+
 
 * [特性](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
 * [兼容性](https://github.com/qiaozi-tech/SecurityWorker#1-%E5%85%BC%E5%AE%B9%E6%80%A7)
@@ -10,13 +11,16 @@
 * [SecurityWorker API](https://github.com/qiaozi-tech/SecurityWorker#3-securityworker-api)
 * [SecurityWorker VM API](https://github.com/qiaozi-tech/SecurityWorker#4-securityworker-vm-api)
 * [有一定安全风险的API](https://github.com/qiaozi-tech/SecurityWorker#5-%E6%9C%89%E4%B8%80%E5%AE%9A%E5%AE%89%E5%85%A8%E9%A3%8E%E9%99%A9%E7%9A%84api)
+* [性能优化建议](https://github.com/qiaozi-tech/SecurityWorker#6-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%BB%BA%E8%AE%AE)
+* [Roadmap](https://github.com/qiaozi-tech/SecurityWorker#7-roadmap)
 
 ### 0. 特性
 * 完整的ECMAScript 5.1标准兼容性
 * 极小的SecruityWorker VM文件体积（~160kb）
 * 保密性极强，执行逻辑及核心算法完全隐匿不可逆
+* 可选择支持多种环境，Browser/NodeJS/小程序（默认不允许NodeJS黑盒运行）
 * 良好的浏览器兼容性，主流浏览器全覆盖
-* 易于使用，API兼容WebWorker
+* 易于使用，API兼容WebWorker（不允许访问DOM/BOM）
 * 易于调试，被保护代码不做混淆，报错信息准确
 
 ### 1. 兼容性
@@ -30,7 +34,7 @@
 * iOS WebView 9+
 
 ### 2. 快速开始
-我们以一个Ping-Pong的示例程序讲解SecurityWorker的基本使用，首先我们创建sw.js用于实现SecurityWorker VM的内部业务逻辑:
+我们以一个[Ping-Pong](https://github.com/qiaozi-tech/SecurityWorker/tree/master/example/basic)的示例程序讲解SecurityWorker的基本使用，首先我们创建sw.js用于实现SecurityWorker VM的内部业务逻辑:
 ```javascript
 // sw.js
 onmessage = function(data) {
@@ -389,7 +393,21 @@ SecurityWorker.ready(function(){
 这里我们可以看到，攻击者很容易发现我们index.html中有传递location.href值的逻辑。但当我们使用$预处理函数后，我们最终的代码会依靠VM转换为opcode经过LLVM处理并进行高强度混淆后嵌入到编译后的代码之中，增强了隐匿性（但需要注意的是，由于$的整个逻辑涉及到从不隐匿环境（Browser）到隐匿环境（SecurityWorker VM）的数据传递，代码仍然在最终编译后的文件中出现，无法做到完全保密，因此可能带来不安全的风险，请斟酌使用）。
 ```javascript
 onmessage = function(data){
-  var location = $('location.href');
+  var location = $(function(){
+    // 以下代码在宿主环境中运行
+    // SecurityWorker会在编译期进行混淆并嵌入到生成代码中
+    // 尽管只是代码的混淆，但是我们再隐藏下真正的数据序列
+    var l = location.href;
+    return l.split('').map(function(v){
+      return v.charCodeAt(0) << 4 + 128;
+    }).join(',');
+  });
+
+  // 下面的代码已经被编译为SecurityWorker VM的opcode，执行在安全环境
+  location = location.split(',').map(function(v){
+    return String.fromCharCode((v - 128) >> 4);
+  });
+
   if(location.indexOf('your domain') > -1){
     request({
       uri: 'your url',
@@ -403,8 +421,55 @@ onmessage = function(data){
 ```javascript
 SecurityWorker.ready(function(){
   var sw = new SecurityWorker();
+  sw.oncreate = function(){
+    sw.postMessage('What Ever You Want');
+  }
   sw.onmessage = function(data){
     console.log(data);
   }
 });
 ```
+
+### 6. 性能优化建议
+SecurityWorker VM与V8等强调性能的Javascript引擎不同，SecurityWorker VM主要目标是更小的emscripten生成体积以及更少的内存使用。对于SecurityWorker VM来说，我们并没有集成类似V8一样的JIT机制，而是使用通过离线翻译你的Javascript代码为SecurityWorker VM指令，然后在运行时解释执行的方式，因此在性能上会有一定的损失。<br/>
+相较于最新版本的V8 JIT优化后的代码，纯CPU计算性能相差7-8倍（执行10000次），I/O任务由于使用了原生环境的功能，性能大体持平。在实际应用中，我们使用SecurityWorker VM的WebSocket每20ms接收10k加密字符串并进行纯Javascript的AES256的解密操作这一任务与原生环境测试结果相比并不大（ Mac Pro 2017, Intel Core i5 2.3GHz 平均占用：2.3% vs 1.8% ）。
+
+#### 尽可能减少指令
+由于SecurityWorker VM并没有JIT，因此你所熟悉的一些优化手段可能会在SecurityWorker VM中失效。不要寄希望于SecurityWorker会优化你的代码，他目前并不智能（逃），任何多余的Javascript代码操作都会增加运行时的开销，例如：
+```javascript
+var i = 1000, x = 0;
+while( i-- ) x++;
+```
+相比于
+```javascript
+var x = 0;
+for( var j = 0; j < 1000; j++ ) x++;
+```
+在SecurityWorker VM中将会快15%，因为for循环中我们额外的引入了比较操作（j < 1000）。但对于此并不需要感到紧张，我们的建议是仍然按照你的方式编写代码，在需要深度优化的时候再进行考虑，因为在SecurityWorker VM中我们持续运行CPU密集型任务的场景并不多，大部分是等待I/O，这很难成为你代码的性能瓶颈。
+
+#### 浮点数有很高的代价
+Javascript的Number类型包含了Int和Float，同时根据ECMA-262标准的要求，我们需要通过一个浮点数指针来实现64-bit IEEE Math操作。但是对于SecurityWorker VM内部，我们考虑到内存占用的问题对Int和Float实际上进行了更细的区分，因此在大部分测试下Int的相关操作相比于Float会更快，占用内存会更少。
+```javascript
+var a = 1; // 4 bytes
+var a = 0.7; // 12 bytes
+```
+
+#### 尽可能使用TypedArray
+当你数组中的类型明确为Number时，我们强烈建议你使用TypedArray来解决你的问题。对于TypedArray来说，我们可以明确类型同时省去类型包装的花销，并且不需要自动的进行数组的resize操作，因此相比与普通数组来说会更快更省内存。
+```javascript
+var b = new Array( 2048 ); // 4KB for the array with values
+for( var i = 0; i++; i < 2048 ) b[ i ] = i + 0.6; // + 8KB with floats
+
+// Just 4KB allocated
+var a = new Float32Array( 2048 );
+```
+
+#### 当出现无法解决的性能问题
+反复测试并联系我们，帮助我们让SecurityWorker变得更好（笑）。
+
+
+### 7. Roadmap
+* 增加SecurityWorker的onerror回调，返回SecurityWorker VM内部的未被捕获的错误
+* 提供小程序的环境支持
+* 提供NodeJS的环境支持
+* 进一步优化生成的opcode大小
