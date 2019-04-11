@@ -471,5 +471,6 @@ var a = new Float32Array( 2048 );
 ### 7. Roadmap
 * 增加SecurityWorker的onerror回调，返回SecurityWorker VM内部的未被捕获的错误
 * 提供小程序的环境支持
+* 提供小游戏的环境支持
 * 提供NodeJS的环境支持
 * 进一步优化生成的opcode大小
