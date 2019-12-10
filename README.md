@@ -14,6 +14,8 @@ SecurityWorker不同于普通的Javascript代码混淆，我们使用 *独立Jav
 * [性能优化建议](https://github.com/qiaozi-tech/SecurityWorker#6-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%BB%BA%E8%AE%AE)
 * [Roadmap](https://github.com/qiaozi-tech/SecurityWorker#7-roadmap)
 
+> 现已提供bin文件供免费加密，由于是免费计算服务资源，请勿攻击！
+
 ### 0. 特性
 * 完整的ECMAScript 5.1标准兼容性
 * 极小的SecruityWorker VM文件体积（~160kb）
