@@ -44,7 +44,11 @@ onmessage = function(data) {
   }
 };
 ```
-接着我们在[官网]()上对sw.js进行编译得到保护文件loader.js，然后我们创建index.html加载loader.js并完成调用逻辑:
+接着我们在使用bin文件对sw.js进行编译得到保护文件loader.js：
+```shell
+> npm run compile ${youfile}
+```
+然后我们创建index.html加载loader.js并完成调用逻辑:
 ```html
 <html>
 <head>
