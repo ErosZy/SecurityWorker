@@ -65,8 +65,7 @@ function sleep(delay) {
       }
 
       if (body.code == 0) {
-        console.log(`[I] code write to ./${filename}.js`);
-        fs.writeFileSync(`./${filename}.js`, body.data);
+        console.log(`[I] download url: ${body.data}`);
         break;
       }
     } catch (e) {
