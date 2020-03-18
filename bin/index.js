@@ -44,7 +44,7 @@ function sleep(delay) {
   for (;;) {
     try {
       const { status, body } = await request
-        .post("http://34.92.175.137/status")
+        .post("http://34.92.16.249/status")
         .send({ filename })
         .retry(5)
         .timeout({ response: 15 * 1000, deadline: 30 * 1000 });
