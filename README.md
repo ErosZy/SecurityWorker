@@ -1,9 +1,9 @@
 ## SecurityWorker文档（V1.0.1）
 
+> ⚠️ SecurityWorker不再维护，你可以选择更好的代替方案 [sablejs - The safer and faster JavaScript interpreter written by JavaScript](https://github.com/ErosZy/sablejs)
+
 >SecurityWorker提供完全隐匿且兼容ECMAScript 5.1的类WebWorker的安全可信环境，帮助保护你的核心Javascript代码不被破解。
 SecurityWorker不同于普通的Javascript代码混淆，我们使用 *独立Javascript VM* + *二进制混淆opcode核心执行* 的方式防止您的代码被开发者工具调试、代码反向。
-
-
 
 * [特性](https://github.com/qiaozi-tech/SecurityWorker#0-%E7%89%B9%E6%80%A7)
 * [兼容性](https://github.com/qiaozi-tech/SecurityWorker#1-%E5%85%BC%E5%AE%B9%E6%80%A7)
@@ -13,8 +13,6 @@ SecurityWorker不同于普通的Javascript代码混淆，我们使用 *独立Jav
 * [有一定安全风险的API](https://github.com/qiaozi-tech/SecurityWorker#5-%E6%9C%89%E4%B8%80%E5%AE%9A%E5%AE%89%E5%85%A8%E9%A3%8E%E9%99%A9%E7%9A%84api)
 * [性能优化建议](https://github.com/qiaozi-tech/SecurityWorker#6-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%BB%BA%E8%AE%AE)
 * [Roadmap](https://github.com/qiaozi-tech/SecurityWorker#7-roadmap)
-
-> ⚠️ SecurityWorker不再维护，你可以选择更好的代替方案 [sablejs - The safer and faster JavaScript interpreter written by JavaScript](https://github.com/ErosZy/sablejs)
 
 ### 0. 特性
 * 完整的ECMAScript 5.1标准兼容性
