@@ -19,7 +19,7 @@ function sleep(delay) {
   let data = fs.readFileSync(filepath).toString();
   console.log(`[I] upload codes to SecurityWorker compiler server...`);
   let { status, body } = await request
-    .post("http://34.92.16.249/code")
+    .post("http://35.220.207.211/code")
     .send({
       code: data
     })
@@ -44,7 +44,7 @@ function sleep(delay) {
   for (;;) {
     try {
       const { status, body } = await request
-        .post("http://34.92.16.249/status")
+        .post("http://35.220.207.211/status")
         .send({ filename })
         .retry(5)
         .timeout({ response: 15 * 1000, deadline: 30 * 1000 });
