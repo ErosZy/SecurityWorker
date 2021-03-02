@@ -1,0 +1,13 @@
+language: c
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install libcurl4-gnutls-dev valgrind -qq
+  - git clone https://github.com/clibs/clib.git /tmp/clib
+  - sudo make -C /tmp/clib install
+install: clib install --dev
+script:
+  - make test
+  - valgrind --leak-check=full --error-exitcode=1 ./test
+  - make clean
+  - make test USE_CUSTOM_MALLOC=true
+  - valgrind --leak-check=full --error-exitcode=1 ./test

@@ -1,5 +1,6 @@
 ## SecurityWorker文档（V1.0.1）
 
+> ⚠️ SecurityWorker核心已开源
 > ⚠️ SecurityWorker不再维护，你可以选择更好的代替方案 [sablejs](https://github.com/ErosZy/sablejs)。
 
 >SecurityWorker提供完全隐匿且兼容ECMAScript 5.1的类WebWorker的安全可信环境，帮助保护你的核心Javascript代码不被破解。

@@ -1,0 +1,1 @@
+add_library(gzip mini_gzip.c miniz.c)
